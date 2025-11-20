@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+clean(){
+	echo "Cleaning folder from json files"
+	rm *.json
+	echo "Done"
+}
+
+convert() {
+	echo "Converting .net to .json"
+	python ./net_to_json.py
+
+	echo "Converting .pat to .json"
+	python ./path_to_json.py
+
+	echo "All done"
+}
+
+case "$1" in
+	clean) clean
+	;;
+	convert) convert
+	;;
+	*) convert
+	;;
+esac
+

@@ -39,8 +39,9 @@ def convert_to_json(input_file, alias="NSFNet", name="National Science Foundatio
 
 
 if __name__ == "__main__":
-	input_filename = "../POL12/pol12.net"      # Your original format file
-	output_filename = "pol12.json"    # Output JSON file
+	# POL
+	input_filename = "../POL12/pol12.net" # Original format file
+	output_filename = "pol12net.json"     # Output JSON file
 	json_data = convert_to_json(input_filename, "POL12", "pol12")
 
 	with open(output_filename, "w") as f:
@@ -48,8 +49,9 @@ if __name__ == "__main__":
 
 	print("JSON saved to", output_filename)
 
-	input_filename = "../US26/us26.net"      # Your original format file
-	output_filename = "us26.json"    # Output JSON file
+	# US
+	input_filename = "../US26/us26.net" # Original format file
+	output_filename = "us26net.json"    # Output JSON file
 	json_data = convert_to_json(input_filename, "US26", "us26")
 
 	with open(output_filename, "w") as f:
