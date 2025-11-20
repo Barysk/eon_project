@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.1)
 set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(EON VERSION 1.0)
