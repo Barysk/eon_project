@@ -1,3 +1,3 @@
 Links
-- [biblioteka do symulacji graf¢w](https://networkx.org/en/)
+- [graph helper library](https://networkx.org/en/)
 
