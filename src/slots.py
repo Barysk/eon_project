@@ -1,4 +1,5 @@
 import warnings
+from itertools import count
 
 
 class Slots:
@@ -6,6 +7,9 @@ class Slots:
 
     def __init__(self):
         self.__slots : list[bool] = [False] * 320 # stores info about the availability of slots
+
+    def __repr__(self) -> str:
+        return f"[Taken: {self.__slots.count(True)}; Free: {self.__slots.count(False)}]"
 
     def is_spectrum_free(self, start:int, length:int) -> bool:
         """
