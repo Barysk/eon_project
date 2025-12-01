@@ -1,4 +1,6 @@
 import os
+from traceback import print_exc
+from unicodedata import digit
 
 from networkx import DiGraph
 from src.connection import Connection
@@ -49,3 +51,32 @@ def read_connections_from_folder(folder: str, limit : int = -1) -> list[Connecti
         for i in range(limit):
             connections.append(read_connection_from_file(os.path.join(folder, os.listdir(folder)[i])))
     return connections
+
+def read_routes_from_file(filename : str, g : DiGraph):
+    """
+    Reads route data from file and returns them as an ordered list of lists of nodes, where  each inner list represents a different route.
+    :param filename: file to read data from
+    :return: a list of lists, where each of the inner lists represents a route
+    """
+    with open(filename, "r") as file:
+        lines = file.readlines()
+    lines = lines[1:]
+
+    temp = []
+    edge_list = list(g.edges())
+    for line in lines[:5]:
+        ints = list(map(int, line.split()))
+        out_line = ""
+        for i in range(len(ints)):
+            if ints[i]==1:
+                out_line += str(edge_list[i])
+        print(out_line)
+
+    return None
+
+
+
+
+if __name__ == "__main__":
+    g = read_graph_from_file("../assets/POL12/pol12.net")
+    read_routes_from_file("../assets/POL12/pol12.pat", g)
