@@ -16,11 +16,13 @@ def read_graph_from_file(filename: str) -> DiGraph:
     with open(filename, "r") as file:
         lines = file.readlines()
     graph = DiGraph()
+    cnt =0
     for i in range(2, len(lines)):
         dists = list(map(int, lines[i].split()))
         for j in range(len(dists)):
             if dists[j] > 0:
-                graph.add_edge(i - 2, j, distance=dists[j], slots=Slots())
+                graph.add_edge(i - 2, j, distance=dists[j], slots=Slots(), index=cnt)
+                cnt+=1
     return graph
 
 def read_connection_from_file(filename: str) -> Connection:
@@ -63,13 +65,16 @@ def read_routes_from_file(filename : str, g : DiGraph):
     lines = lines[1:]
 
     temp = []
-    edge_list = list(g.edges())
+    edge_list = list(g.edges.data("index"))
+    edge_list.sort()
+    print(edge_list)
     for line in lines[:5]:
         ints = list(map(int, line.split()))
         out_line = ""
         for i in range(len(ints)):
             if ints[i]==1:
-                out_line += str(edge_list[i])
+                out_line += f"{i}:{str(edge_list[i])}\t"
+                #out_line += f"{i} "
         print(out_line)
 
     return None
