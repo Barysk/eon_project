@@ -54,34 +54,43 @@ def read_connections_from_folder(folder: str, limit : int = -1) -> list[Connecti
             connections.append(read_connection_from_file(os.path.join(folder, os.listdir(folder)[i])))
     return connections
 
-def read_routes_from_file(filename : str, g : DiGraph):
+def read_routes_from_file(filename : str, node_count : int):
     """
-    Reads route data from file and returns them as an ordered list of lists of nodes, where  each inner list represents a different route.
+    Reads route data from file and returns them as an ordered list of dicts of nodes, where  each inner list represents a different route.
     :param filename: file to read data from
-    :return: a list of lists, where each of the inner lists represents a route
+    :return: a list of dicts, where each of the inner dicts represents a route
     """
     with open(filename, "r") as file:
         lines = file.readlines()
     lines = lines[1:]
 
-    temp = []
-    edge_list = list(g.edges.data("index"))
-    edge_list.sort()
-    print(edge_list)
-    for line in lines[:5]:
-        ints = list(map(int, line.split()))
-        out_line = ""
-        for i in range(len(ints)):
-            if ints[i]==1:
-                out_line += f"{i}:{str(edge_list[i])}\t"
-                #out_line += f"{i} "
-        print(out_line)
-
-    return None
+    output = []
+    for src in range(node_count):
+        for dest in range(node_count):
+            if src==dest:
+                continue
+            for rt_num in range(30):
+                line = lines[src*node_count*(node_count-1)+dest+rt_num]
+                ints = list(map(int, line.split()))
+                route_edges = []
+                for edg_index in range(len(ints)):
+                    if ints[edg_index]==1:
+                        route_edges.append(edg_index)
+                route = {"source" : src, "destination" : dest, "edges" : route_edges}
+                output.append(route)
+    return output
 
 
 
 
 if __name__ == "__main__":
     g = read_graph_from_file("../assets/POL12/pol12.net")
-    read_routes_from_file("../assets/POL12/pol12.pat", g)
+    rt = read_routes_from_file("../assets/POL12/pol12.pat", g.number_of_nodes())
+    print(f"There are {len(rt)} routes.")
+    print(f"Routes between nodes 0 and 1:")
+    for route in filter(lambda c: c["source"] == 0 and c["destination"] == 1, rt):
+        out = ""
+        for edge_index in route["edges"]:
+            edg = list(filter(lambda e: e[2]==edge_index, g.edges.data("index")))[0]
+            out += f"{edg[0]} -> {edg[1]}, "
+        print(out)
