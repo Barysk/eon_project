@@ -5,16 +5,22 @@ from connection import Connection
 
 class SuperChannel:
     """
-    A class representing a bundle of connections with the same source and destination. Defines the encoding used by them and the route used.
+    A class representing a bundle of connections with the same source and destination.
     """
-    def __init__(self, connections : list[Connection], routes : list[int]):
+    def __init__(self, connections : list[Connection]):
         self.__connections = connections
-        self.__source : Final[int] = connections[0].source
-        self.__destination : Final[int] = connections[0].destination
-        self.__routes = routes
+        self.source : Final[int] = connections[0].source
+        self.destination : Final[int] = connections[0].destination
 
-    def get_source(self):
+
+    def get_source(self) -> int:
         return self.__source
 
-    def get_destination(self):
+    def get_destination(self) -> int:
         return self.__destination
+
+    def get_rate(self, time : int) -> float:
+        cumulative_rate = 0
+        for connection in self.__connections:
+            cumulative_rate += connection.rates[time]
+        return cumulative_rate
