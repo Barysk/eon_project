@@ -2,8 +2,8 @@ import os
 
 from networkx import DiGraph
 
-from src.connection import Connection
-from src.slots import Slots
+from src.data_structures.connection import Connection
+from src.data_structures.slots import Slots
 
 
 def read_graph_from_file(filename: str) -> DiGraph:
@@ -103,8 +103,8 @@ def read_routes_from_file(filename : str, graph : DiGraph) -> list[dict]:
 
 
 if __name__ == "__main__":
-    g = read_graph_from_file("../assets/POL12/pol12.net")
-    rt = read_routes_from_file("../assets/POL12/pol12.pat", g)
+    g = read_graph_from_file("../../assets/POL12/pol12.net")
+    rt = read_routes_from_file("../../assets/POL12/pol12.pat", g)
     print(f"There are {len(rt)} routes.")
 
     routes_from_0_to_1_and_2 = list(filter(lambda c: c["source"] == 0 and c["destination"] in [1, 2], rt))

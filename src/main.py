@@ -1,6 +1,6 @@
 import networkx as nx
-from slots import Slots
-from data_importer import read_graph_from_file
+from src.data_structures.slots import Slots
+from src.data_structures.data_importer import read_graph_from_file
 
 G = nx.DiGraph()
 
