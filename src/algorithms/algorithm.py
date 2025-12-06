@@ -8,5 +8,5 @@ class Algorithm:
     def __init__(self):
         pass
 
-    def run(self, graph : DiGraph, connections : list[Connection], routes : list[dict]):
+    def run(self, graph : DiGraph, connections : list[Connection], routes : list[dict], modulations : list[dict]):
         pass

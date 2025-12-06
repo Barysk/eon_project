@@ -3,6 +3,7 @@ import os
 from networkx import DiGraph
 
 from src.data_structures.connection import Connection
+from src.data_structures.route import Route
 from src.data_structures.slots import Slots
 
 
@@ -53,7 +54,7 @@ def read_connections_from_folder(folder: str, limit : int = -1) -> list[Connecti
             connections.append(read_connection_from_file(os.path.join(folder, os.listdir(folder)[i])))
     return connections
 
-def read_routes_from_file(filename : str, graph : DiGraph) -> list[dict]:
+def read_routes_from_file(filename : str, graph : DiGraph) -> list[Route]:
     """
     Reads route data from file and returns them as a list of dictionaries.
     :param filename: file to read data from
@@ -87,32 +88,14 @@ def read_routes_from_file(filename : str, graph : DiGraph) -> list[dict]:
         for edg_data in route_edges:
             distance += graph_edges[edg_data]["distance"]
 
-        route = {"source": src, "destination": dest, "edges": route_edges, "distance": distance}
-        output.append(route)
+        rt = Route(src, dest, route_edges, distance)
+        output.append(rt)
         rt_num += 1
 
         if rt_num == 30:
             rt_num = 0
             dest += 1
-        if dest == g.number_of_edges():
+        if dest == graph.number_of_edges():
             dest = 0
             src += 1
     return output
-
-
-
-
-if __name__ == "__main__":
-    g = read_graph_from_file("../../assets/POL12/pol12.net")
-    rt = read_routes_from_file("../../assets/POL12/pol12.pat", g)
-    print(f"There are {len(rt)} routes.")
-
-    routes_from_0_to_1_and_2 = list(filter(lambda c: c["source"] == 0 and c["destination"] in [1, 2], rt))
-
-    for route in routes_from_0_to_1_and_2:
-        str_edges = ""
-        for edge in route["edges"]:
-            #print(g.edges.data("index"))
-            for fil_edg in filter(lambda e: e[2] == edge, g.edges.data("index")):
-                str_edges += f"\t({fil_edg[0]} -> {fil_edg[1]})"
-        print(f"{route['source']} -> {route['destination']} : [{route['distance']}] : {str_edges}")
