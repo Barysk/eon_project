@@ -16,14 +16,15 @@ def read_graph_from_file(filename: str) -> DiGraph:
     with open(filename, "r") as file:
         lines = file.readlines()
     graph = DiGraph()
-    cnt =0
+    cnt = 0
     for i in range(2, len(lines)):
         dists = list(map(int, lines[i].split()))
         for j in range(len(dists)):
             if dists[j] > 0:
                 graph.add_edge(i - 2, j, distance=dists[j], slots=Slots(), index=cnt)
-                cnt+=1
+                cnt += 1
     return graph
+
 
 def read_connection_from_file(filename: str) -> Connection:
     """
@@ -38,7 +39,8 @@ def read_connection_from_file(filename: str) -> Connection:
     rates = list(map(float, lines[3:]))
     return Connection(src, dst, rates)
 
-def read_connections_from_folder(folder: str, limit : int = -1) -> list[Connection]:
+
+def read_connections_from_folder(folder: str, limit: int = -1) -> list[Connection]:
     """
     Reads Connections from files in a specified folder
     :param folder: folder path
@@ -54,7 +56,8 @@ def read_connections_from_folder(folder: str, limit : int = -1) -> list[Connecti
             connections.append(read_connection_from_file(os.path.join(folder, os.listdir(folder)[i])))
     return connections
 
-def read_routes_from_file(filename : str, graph : DiGraph) -> list[Route]:
+
+def read_routes_from_file(filename: str, graph: DiGraph) -> list[Route]:
     """
     Reads route data from file and returns them as a list of dictionaries.
     :param filename: file to read data from
@@ -88,14 +91,16 @@ def read_routes_from_file(filename : str, graph : DiGraph) -> list[Route]:
         for edg_data in route_edges:
             distance += graph_edges[edg_data]["distance"]
 
-        rt = Route(src, dest, route_edges, distance)
+        rt = Route(source=src, destination=dest, edges=route_edges, distance=distance)
         output.append(rt)
+
         rt_num += 1
 
         if rt_num == 30:
             rt_num = 0
             dest += 1
-        if dest == graph.number_of_edges():
+
+        if dest == graph.number_of_nodes():
             dest = 0
             src += 1
     return output
