@@ -12,5 +12,5 @@ modulations = [Modulation(name="QPSK", max_distance=9999, bit_rate=200, width=6)
                Modulation(name="16-QAM", max_distance=1600, bit_rate=600, width=9),
                Modulation(name="32-QAM", max_distance=200, bit_rate=800, width=9)]
 
-first_fit_ng = FirsFitNG()
-first_fit_ng.run(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
+first_fit_ng = FirsFitNG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
+first_fit_ng.run()

@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 from networkx import DiGraph
 
@@ -69,7 +70,7 @@ def read_routes_from_file(filename: str, graph: DiGraph) -> list[Route]:
     lines = lines[1:]
 
     # indexing the edges for ease of access
-    graph_edges = {}
+    graph_edges : dict[int, dict[str, Any]] = {}
     for src, dest, edg_data in graph.edges(data=True):
         graph_edges[edg_data["index"]] = edg_data
 
@@ -82,16 +83,16 @@ def read_routes_from_file(filename: str, graph: DiGraph) -> list[Route]:
             dest += 1
 
         edge_list = list(map(int, line.split()))
-        route_edges = []
+        route_edges : list[int] = []
         for edg_index in range(len(edge_list)):
             if edge_list[edg_index] == 1:
                 route_edges.append(edg_index)
 
         distance = 0
-        for edg_data in route_edges:
-            distance += graph_edges[edg_data]["distance"]
+        for edge_index in route_edges:
+            distance += graph_edges[edge_index]["distance"]
 
-        rt = Route(source=src, destination=dest, edges=route_edges, distance=distance)
+        rt = Route(source=src, destination=dest, edges=[graph_edges[edge_index] for edge_index in route_edges], distance=distance)
         output.append(rt)
 
         rt_num += 1

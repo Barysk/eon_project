@@ -1,9 +1,8 @@
 import warnings
-from itertools import count
 
 
 class Slots:
-    """ Stores data about the EON connection slots for use in the graphX library"""
+    """A class representing the EON connection slots along a singular network edge. For use in a graphX's graph."""
 
     def __init__(self):
         self.__slots : list[bool] = [False] * 320 # stores info about the availability of slots
@@ -23,16 +22,16 @@ class Slots:
                 return False
         return True
 
-    def reserve_slots(self, start: int, length: int) -> None:
+    def reserve_slots(self, start: int, width: int) -> None:
         """
         Reserve slots along the connection.
         :param start: The first slot of the connection
-        :param length: The length of the connection
+        :param width: The length of the connection
         :return: None
         """
-        if not self.is_spectrum_free(start, length):
+        if not self.is_spectrum_free(start, width):
             raise ValueError("Slots not free!") # safety
-        for i in range(start, length):
+        for i in range(start, width):
             self.__slots[i] = True
 
     def free_slots(self, start: int, length: int) -> None:
@@ -45,4 +44,8 @@ class Slots:
         for i in range(start, length):
             if not self.__slots[i]:
                 warnings.warn("Freed up an already free slot!", RuntimeWarning) # safety
+            self.__slots[i] = False
+
+    def clear(self):
+        for i in range(320):
             self.__slots[i] = False
