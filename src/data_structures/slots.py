@@ -8,7 +8,7 @@ class Slots:
         self.__slots : list[bool] = [False] * 320 # stores info about the availability of slots
 
     def __repr__(self) -> str:
-        return f"[Taken: {self.__slots.count(True)}; Free: {self.__slots.count(False)}]"
+        return f"[[{id(self)}] Taken: {self.__slots.count(True)}; Free: {self.__slots.count(False)}]"
 
     def is_spectrum_free(self, start:int, length:int) -> bool:
         """
@@ -17,8 +17,8 @@ class Slots:
         :param length: The length of the connection
         :return: True if the connection is free, False otherwise
         """
-        for i in range(start, length):
-            if self.__slots[i]:
+        for i in range(length):
+            if self.__slots[start + i]:
                 return False
         return True
 
@@ -31,8 +31,8 @@ class Slots:
         """
         if not self.is_spectrum_free(start, width):
             raise ValueError("Slots not free!") # safety
-        for i in range(start, width):
-            self.__slots[i] = True
+        for i in range(width):
+            self.__slots[start + i] = True
 
     def free_slots(self, start: int, length: int) -> None:
         """

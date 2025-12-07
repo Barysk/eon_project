@@ -17,9 +17,9 @@ class FirsFitNG(Algorithm):
         for route in filter(lambda r: r.source == super_channel.source and r.destination == super_channel.destination,
                             self.routes):  # for every potential route
             possible_modulations = list(
-                filter(lambda m: m.max_distance > route.distance and m.bitrate > super_channel.get_rate(time),
+                filter(lambda m: m.max_distance > route.distance and m.bitrate > super_channel.get_desired_rate(time),
                        self.modulations))
-            possible_modulations.sort(key=lambda m: m.width)  # TODO: possible bug, is the sorting direction good?
+            possible_modulations.sort(key=lambda m: m.width)
 
             for modulation in possible_modulations:
                 for spectrum_start in range(320):
@@ -35,34 +35,40 @@ class FirsFitNG(Algorithm):
 
     def __update_superchannels(self, time: int) -> None:
         """Updates the superchannels by recalculating the rates and, if necessary, routing and modulating them differently."""
-        for sup_chan in self.super_channels:
-            if sup_chan.get_rate(time) > sup_chan.modulation.bitrate:
-                try:
+        try:
+            for sup_chan in self.super_channels:
+                if sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate:
                     self.__solve_rsa(sup_chan, time)
-                except ValueError:
-                    self.__rebuild_assignments()
+        except ValueError:
+            self.__rebuild_assignments(time)
 
 
     def __init_superchannels(self):
-        """Build new superchannels, assuming a clean state"""
+        """Build new superchannels, assuming none exist."""
+        if not len(self.super_channels) == 0:
+            raise ValueError("Superchannels already exist! Unstable behaviour!")
         for connection in self.connections:
             new_channel = SuperChannel(connections=[connection])
-            self.__solve_rsa(new_channel, 0)
+            self.super_channels.append(new_channel)
+        self.__rebuild_assignments(0)
 
 
-    def __rebuild_assignments(self):
+    def __rebuild_assignments(self, time: int) -> None:
         """Regenerate the assignments from scratch. Cleans the network state."""
-        for edge in self.graph.edges:
-            edge["slots"].clear()
+        for super_channel in self.super_channels: # free the resources
+            super_channel.clear_solution()
 
-        for super_channel in self.super_channels:
-            super_channel.modulation = None
-            super_channel.spectral_position = None
-            super_channel.route = None
-        pass
+        # if everything works as it should, now the network is all freed up
+        for super_channel in self.super_channels: # generate new solutions
+            self.__solve_rsa(super_channel, time)
+
 
     def run(self):
         self.__init_superchannels()
         for iteration in range(len(self.connections[0].rates)):
-            pass
+            self.__update_superchannels(iteration)
+            if iteration == 200:
+                print(f"SRC\tDST\tBAND\tMOD\t\t\t\t\tRT DIST\tMAX DIST")
+                for super_channel in self.super_channels:
+                    print(super_channel.get_debug(iteration))
 

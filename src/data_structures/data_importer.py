@@ -57,7 +57,6 @@ def read_connections_from_folder(folder: str, limit: int = -1) -> list[Connectio
             connections.append(read_connection_from_file(os.path.join(folder, os.listdir(folder)[i])))
     return connections
 
-
 def read_routes_from_file(filename: str, graph: DiGraph) -> list[Route]:
     """
     Reads route data from file and returns them as a list of dictionaries.

@@ -9,7 +9,7 @@ from src.data_structures.superchannel import SuperChannel
 class Algorithm:
     """Abstract class representing an algorithm with surrounding data structures."""
 
-    def __init__(self, graph : DiGraph[int], connections : list[Connection], routes : list[Route], modulations : list[Modulation]):
+    def __init__(self, graph : DiGraph, connections : list[Connection], routes : list[Route], modulations : list[Modulation]):
         self.time : int = 0
         self.graph : DiGraph[int] = graph
         self.routes : list[Route]= routes

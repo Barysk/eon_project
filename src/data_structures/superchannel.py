@@ -27,8 +27,8 @@ class SuperChannel:
     def __repr__(self) -> str:
         return f"[Super channel from {self.source} to {self.destination}]"
 
-    def get_rate(self, time: int) -> float:
-        """Returns the collective rate of the superchannel."""
+    def get_desired_rate(self, time: int) -> float:
+        """Returns the collective desired rate of the underlying connections."""
         cumulative_rate = 0
         for connection in self.__connections:
             cumulative_rate += connection.rates[time]
@@ -41,3 +41,16 @@ class SuperChannel:
 
         for edge in route.edges:
             edge["slots"].reserve_slots(start=spectral_position, width=modulation.width)
+
+    def clear_solution(self) -> None:
+        """Returns the superchannel to a clear state, freeing the used resources in the process."""
+        if self.route is not None:
+            for edge in self.route.edges:
+                edge["slots"].clear() # free up the spectrum used by the superchannel
+
+        self.route = None
+        self.modulation = None
+        self.spectral_position = None
+
+    def get_debug(self, iteration : int) -> str:
+        return f"{self.source}\t{self.destination}\t{self.get_desired_rate(iteration):3.3f}\t{self.modulation}\t{self.route.distance}\t{self.modulation.max_distance}"
