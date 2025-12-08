@@ -14,9 +14,7 @@ class FirsFitNG(Algorithm):
     def __init__(self, graph: DiGraph, connections: list[Connection], routes: list[Route], modulations: list[Modulation]):
         super().__init__(graph, connections, routes, modulations)
 
-    # TODO Documentation
     def _solve_rsa(self, super_channel : SuperChannel, time : int):
-        """Assigns the solution of the RSA problem to the appropriate Superchannels."""
         for route in filter(lambda r: r.source == super_channel.source and r.destination == super_channel.destination,
                             self.routes):  # for every potential route (filter is stable, so the shortest first)
 
@@ -42,7 +40,6 @@ class FirsFitNG(Algorithm):
         raise ValueError("Could not solve RSA for current state!")
 
     def _init_superchannels(self):
-        """Build new superchannels, assuming none exist."""
         if not len(self.super_channels) == 0:
             raise ValueError("Superchannels already exist! Unstable behaviour!")
         for connection in self.connections:
