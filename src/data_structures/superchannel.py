@@ -23,6 +23,7 @@ class SuperChannel:
         self.modulation: Optional[Modulation] = modulation
         self.route: Optional[Route] = route
         self.spectral_position: Optional[int] = spectral_position
+        self.channel_number: Optional[int] = None
 
     def __repr__(self) -> str:
         return f"[Super channel from {self.source} to {self.destination}]"
@@ -34,13 +35,15 @@ class SuperChannel:
             cumulative_rate += connection.rates[time]
         return cumulative_rate
 
-    def assign_solution(self, route : Route, modulation : Modulation, spectral_position : int) -> None:
+    def assign_solution(self, route : Route, modulation : Modulation, spectral_position : int, channel_number : int) -> None:
+        """Stores the spectral assignments and used connection parameters."""
         self.route = route
         self.modulation = modulation
         self.spectral_position = spectral_position
+        self.channel_number = channel_number
 
         for edge in route.edges:
-            edge["slots"].reserve_slots(start=spectral_position, width=modulation.width)
+            edge["slots"].reserve_slots(start=spectral_position, width=modulation.width * channel_number)
 
     def clear_solution(self) -> None:
         """Returns the superchannel to a clear state, freeing the used resources in the process."""
@@ -51,6 +54,7 @@ class SuperChannel:
         self.route = None
         self.modulation = None
         self.spectral_position = None
+        self.channel_number = None
 
     def get_debug(self, iteration : int) -> str:
         return f"{self.source}\t{self.destination}\t{self.get_desired_rate(iteration):3.3f}\t{self.modulation}\t{self.route.distance}\t{self.modulation.max_distance}"
