@@ -15,7 +15,7 @@ class FirsFitNG(Algorithm):
         super().__init__(graph, connections, routes, modulations)
 
     # TODO Documentation
-    def __solve_rsa(self, super_channel : SuperChannel, time : int):
+    def _solve_rsa(self, super_channel : SuperChannel, time : int):
         """Assigns the solution of the RSA problem to the appropriate Superchannels."""
         for route in filter(lambda r: r.source == super_channel.source and r.destination == super_channel.destination,
                             self.routes):  # for every potential route (filter is stable, so the shortest first)
@@ -41,45 +41,12 @@ class FirsFitNG(Algorithm):
                         return
         raise ValueError("Could not solve RSA for current state!")
 
-    def __update_superchannels(self, time: int) -> None:
-        """Updates the superchannels by recalculating the rates and, if necessary, routing and modulating them differently."""
-        try:
-            for sup_chan in self.super_channels:
-                if sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate * sup_chan.channel_number:
-                    self.__solve_rsa(sup_chan, time)
-        except ValueError: # The problem is unsolvable
-            self.__rebuild_assignments(time)
-
-
-    def __init_superchannels(self):
+    def _init_superchannels(self):
         """Build new superchannels, assuming none exist."""
         if not len(self.super_channels) == 0:
             raise ValueError("Superchannels already exist! Unstable behaviour!")
         for connection in self.connections:
             new_channel = SuperChannel(connections=[connection])
             self.super_channels.append(new_channel)
-        self.__rebuild_assignments(0)
+        self._rebuild_assignments(0)
 
-
-    def __rebuild_assignments(self, time: int) -> None:
-        """Regenerate the assignments from scratch. Cleans the network state."""
-        for super_channel in self.super_channels: # free the resources
-            super_channel.clear_solution()
-
-        # if everything works as it should, now the network is all freed up
-        for super_channel in self.super_channels: # generate new solutions
-            self.__solve_rsa(super_channel, time)
-
-
-    def run(self):
-        """Runs the algorithm."""
-        self.__init_superchannels()
-        cumulative_perf = 0
-        for iteration in range(len(self.connections[0].rates)):
-            self.__update_superchannels(iteration)
-            perf = 0
-            for super_channel in self.super_channels:
-                perf += super_channel.channel_number
-            cumulative_perf += perf
-            print(f"Iteration {iteration}: {perf}")
-        print(f"Overall: {cumulative_perf}")
