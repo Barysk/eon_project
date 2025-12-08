@@ -1,0 +1,49 @@
+from networkx import DiGraph
+
+from src.algorithms.algorithm import Algorithm
+from src.data_structures.connection import Connection
+from src.data_structures.modulation import Modulation
+from src.data_structures.route import Route
+from src.data_structures.superchannel import SuperChannel
+
+
+# TODO better inheritance with class Algorithm
+class FirsFitNG(Algorithm):
+    """Implementation of the First Fit algorithm without grooming."""
+
+    def __init__(self, graph: DiGraph, connections: list[Connection], routes: list[Route], modulations: list[Modulation]):
+        super().__init__(graph, connections, routes, modulations)
+
+    def _solve_rsa(self, super_channel : SuperChannel, time : int):
+        for route in filter(lambda r: r.source == super_channel.source and r.destination == super_channel.destination,
+                            self.routes):  # for every potential route (filter is stable, so the shortest first)
+
+            channel_number = 0 # number of channels, used to serve superchannels with large throughput
+            possible_modulations = []
+            while len(possible_modulations) == 0:
+                channel_number += 1
+                possible_modulations = list(
+                    filter(lambda m: m.max_distance > route.distance and m.bitrate * channel_number > super_channel.get_desired_rate(time),
+                           self.modulations))
+            possible_modulations.sort(key=lambda m: m.width)
+
+            for modulation in possible_modulations:
+                for spectrum_start in range(320):
+                    found_allocation = True
+                    for edge in route.edges:
+                        if not edge["slots"].is_spectrum_free(spectrum_start, modulation.width*channel_number):
+                            found_allocation = False
+                            break
+                    if found_allocation:
+                        super_channel.assign_solution(route, modulation, spectrum_start, channel_number)
+                        return
+        raise ValueError("Could not solve RSA for current state!")
+
+    def _init_superchannels(self):
+        if not len(self.super_channels) == 0:
+            raise ValueError("Superchannels already exist! Unstable behaviour!")
+        for connection in self.connections:
+            new_channel = SuperChannel(connections=[connection])
+            self.super_channels.append(new_channel)
+        self._rebuild_assignments(0)
+

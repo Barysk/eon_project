@@ -2,7 +2,7 @@ from typing import Final
 
 
 class Connection:
-    """Represents a connection from one point in the network to another. Stores the time variable traffic."""
+    """A class representing a connection from one point in the network to another. Stores the time variable traffic. Immutable."""
     def __init__(self, src : int, dest : int, rates : list[float]) -> None:
         """
         Constructor
