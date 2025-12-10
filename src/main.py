@@ -1,4 +1,5 @@
-from src.algorithms.first_fit_ng import FirsFitNG
+from src.algorithms.first_fit_ng import FirstFitNG
+from src.algorithms.first_fit_sg import FirstFitSG
 from src.data_structures.modulation import Modulation
 from src.data_structures.data_importer import read_graph_from_file, read_routes_from_file, read_connections_from_folder
 
@@ -12,5 +13,5 @@ modulations = [Modulation(name="QPSK", max_distance=9999, bit_rate=200, width=6)
                Modulation(name="16-QAM", max_distance=1600, bit_rate=600, width=9),
                Modulation(name="32-QAM", max_distance=200, bit_rate=800, width=9)]
 
-first_fit_ng = FirsFitNG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
+first_fit_ng = FirstFitSG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
 first_fit_ng.run()

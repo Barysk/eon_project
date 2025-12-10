@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from networkx import DiGraph
 
 from src.algorithms.algorithm import Algorithm
@@ -7,8 +9,8 @@ from src.data_structures.route import Route
 from src.data_structures.superchannel import SuperChannel
 
 
-class FirstFitNG(Algorithm):
-    """Implementation of the First Fit algorithm without grooming."""
+class FirstFitSG(Algorithm):
+    """Implementation of the First Fit algorithm sith static grooming at the start."""
 
     def __init__(self, graph: DiGraph, connections: list[Connection], routes: list[Route], modulations: list[Modulation]):
         super().__init__(graph, connections, routes, modulations)
@@ -41,8 +43,17 @@ class FirstFitNG(Algorithm):
     def _init_superchannels(self):
         if not len(self.super_channels) == 0:
             raise ValueError("Superchannels already exist! Unstable behaviour!")
+
+        grouped_connections = {}
         for connection in self.connections:
-            new_channel = SuperChannel(connections=[connection])
+            key = (connection.source, connection.destination)
+            if key not in grouped_connections:
+                grouped_connections[key] = [connection]
+            else:
+                grouped_connections[key].append(connection)
+
+        for key, connections in grouped_connections.items():
+            new_channel = SuperChannel(connections=connections)
             self.super_channels.append(new_channel)
         self._rebuild_assignments(0)
 
