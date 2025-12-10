@@ -10,7 +10,7 @@ from src.data_structures.superchannel import SuperChannel
 
 
 class FirstFitSG(Algorithm):
-    """Implementation of the First Fit algorithm sith static grooming at the start."""
+    """Implementation of the First Fit algorithm with static grooming at the start."""
 
     def __init__(self, graph: DiGraph, connections: list[Connection], routes: list[Route], modulations: list[Modulation]):
         super().__init__(graph, connections, routes, modulations)
