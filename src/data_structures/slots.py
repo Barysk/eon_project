@@ -17,6 +17,8 @@ class Slots:
         :param length: The length of the connection
         :return: True if the connection is free, False otherwise
         """
+        if start + length > 320: # if we would reach out of bounds
+            return False
         for i in range(length):
             if self.__slots[start + i]:
                 return False

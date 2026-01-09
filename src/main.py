@@ -9,7 +9,7 @@ from src.data_structures.data_importer import read_graph_from_file, read_routes_
 
 POL12 = read_graph_from_file("assets/POL12/pol12.net")
 POL12_rt = read_routes_from_file("assets/POL12/pol12.pat", POL12)
-POL12_connections = read_connections_from_folder("assets/POL12/demands_0", 200)
+POL12_connections = read_connections_from_folder("assets/POL12/demands_0", 400)
 
 modulations = [Modulation(name="QPSK", max_distance=9999, bit_rate=200, width=6),
                Modulation(name="8-QAM", max_distance=9999, bit_rate=400, width=9),
@@ -23,9 +23,9 @@ start = time.time()
 # first_fit_ng = FirstFitNG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
 # first_fit_ng.run()
 
-# print("FirstFitSG")
-# first_fit_sg = FirstFitSG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
-# first_fit_sg.run()
+print("FirstFitSG")
+first_fit_sg = FirstFitSG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)
+first_fit_sg.run()
 
 # print("ExactFitNG")
 # exact_fit_ng = ExactFitNG(graph=POL12, connections=POL12_connections, routes=POL12_rt, modulations=modulations)

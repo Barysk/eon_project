@@ -60,7 +60,8 @@ class Algorithm:
         """Updates the superchannels by recalculating the desired rates and, if necessary, routing and modulating them differently."""
         try:
             for sup_chan in self.super_channels:
-                if sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate * sup_chan.channel_number:
+                if (sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate * sup_chan.channel_number or # too little bandwidth
+                        sup_chan.get_desired_rate(time) < 0.9 * sup_chan.modulation.bitrate * sup_chan.channel_number): # too much bandwidth
                     self._solve_rsa(sup_chan, time)
         except ValueError:  # The problem is unsolvable
             self._rebuild_assignments(time)
