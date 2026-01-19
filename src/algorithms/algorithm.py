@@ -41,6 +41,8 @@ class Algorithm:
             self._update_superchannels(iteration)
             perf = 0
             for super_channel in self.super_channels:
+                if super_channel.channel_number is None:
+                    continue
                 perf += super_channel.channel_number
             cumulative_perf += perf
             print(f"Iteration {iteration}: {perf}")
@@ -49,19 +51,41 @@ class Algorithm:
     def _rebuild_assignments(self, time: int) -> None:
         """Cleans the resource allocation and regenerates the solutions.
         Preserves the created SuperChannels."""
+
         for super_channel in self.super_channels:  # free the resources
             super_channel.clear_solution()
 
-        # if everything works as it should, now the resources are freed up
         for super_channel in self.super_channels:  # generate new solutions
-            self._solve_rsa(super_channel, time)
+            try:
+                self._solve_rsa(super_channel, time)
+            except ValueError:
+                super_channel.clear_solution()
+                super_channel.modulation = None
+                super_channel.channel_number = None
+                continue
+
 
     def _update_superchannels(self, time: int) -> None:
         """Updates the superchannels by recalculating the desired rates and, if necessary, routing and modulating them differently."""
         try:
             for sup_chan in self.super_channels:
-                if (sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate * sup_chan.channel_number or # too little bandwidth
-                        sup_chan.get_desired_rate(time) < 0.9 * sup_chan.modulation.bitrate * sup_chan.channel_number): # too much bandwidth
-                    self._solve_rsa(sup_chan, time)
+                if sup_chan.modulation is None or sup_chan.channel_number is None:
+                    try:
+                        self._solve_rsa(sup_chan, time)
+                    except ValueError:
+                        continue
+
+                if (
+                    sup_chan.get_desired_rate(time) >
+                    sup_chan.modulation.bitrate * sup_chan.channel_number
+                ) or (
+                    sup_chan.get_desired_rate(time) <
+                    0.9 * sup_chan.modulation.bitrate * sup_chan.channel_number
+                ):
+                    try:
+                        self._solve_rsa(sup_chan, time)
+                    except ValueError:
+                        self._rebuild_assignments(time)
+
         except ValueError:  # The problem is unsolvable
             self._rebuild_assignments(time)
