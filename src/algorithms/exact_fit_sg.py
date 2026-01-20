@@ -70,7 +70,7 @@ class ExactFitSG(Algorithm):
                     if exact is not None:
                         start_index = exact[0]
                         super_channel.assign_solution(route, modulation, start_index, channel_number)
-                        return
+                        return 0.0 # successfully assigned
 
                     # # best-fit fallback
                     # larger_candidates = [(s, l) for (s, l) in free_intervals if l >= required_slots]
@@ -85,10 +85,9 @@ class ExactFitSG(Algorithm):
                         if l >= required_slots:
                             start_index = s
                             super_channel.assign_solution(route, modulation, start_index, channel_number)
-                            return
+                            return 0.0  # successfully assigned
 
-        raise ValueError("Could not solve RSA for current state!")
-
+        return super_channel.get_desired_rate(time)  # how much bitrate did we drop
 
     def _init_superchannels(self):
         if not len(self.super_channels) == 0:

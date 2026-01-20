@@ -1,0 +1,22 @@
+# pożądany format danych, jest to w zasadzie zbiór plików csv z nagłówkami opisującymi sieć i algorytm
+
+net: USA
+algorithm: First Fit Static Grooming
+
+requests; avg_transceiver_use; avg_dropped_bitrate
+100; 2.1; 0.0
+200; 3.1; 0.0
+300; 4.0; 0.05
+...
+500; 6.6; 0.2
+
+
+net: USA
+algorithm: First Fit No Grooming
+
+requests; avg_transceiver_use; avg_dropped_bitrate
+100; 20.1; 0.0
+200; 39.2; 0.0
+300; 40.1; 0.05
+...
+500; 69.42; 0.4

@@ -50,7 +50,7 @@ TESTS = [
     TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_9"),
 ]
 
-def run_tests(test_case: TestInfo, MOD, output_file="results.cls"):
+def run_tests(test_case: TestInfo, MOD, output_file="results.csv"):
     FOLDER_LIMIT = 500
     net_obj = read_graph_from_file(test_case.net)
     pat_obj = read_routes_from_file(test_case.pat, net_obj)
@@ -68,9 +68,9 @@ def run_tests(test_case: TestInfo, MOD, output_file="results.cls"):
 
         # FirstFitNG
         first_fit_ng = FirstFitNG(
-            graph       = copy.deepcopy(net_obj),
-            connections = copy.deepcopy(dem_obj),
-            routes      = copy.deepcopy(pat_obj),
+            graph       = net_obj, # note: graphs, connections, routes and modulations are read only, no need for a deep copy
+            connections = dem_obj,
+            routes      = pat_obj,
             modulations = MOD)
         first_fit_ng.run()
         results["FirstFitNG"] = first_fit_ng.get_overall_performance()
@@ -112,6 +112,24 @@ def run_tests(test_case: TestInfo, MOD, output_file="results.cls"):
 #########################
 # BEGIN                 #
 #########################
+
+net_obj = read_graph_from_file("./assets/POL12/pol12.net")
+pat_obj = read_routes_from_file("./assets/POL12/pol12.pat", net_obj)
+dem_obj = read_connections_from_folder("./assets/POL12/demands_0", -1) # heavy load
+
+# alg = FirstFitSG(
+#     graph       = net_obj,
+#     connections = dem_obj,
+#     routes      = pat_obj,
+#     modulations = MOD)
+
+alg = ExactFitSG(graph=net_obj, connections=dem_obj, routes=pat_obj, modulations=MOD)
+
+alg.run() # disable the debug in the algorithm.py class to avoid too many prints
+
+print(f"Overall performance: {alg.get_overall_performance()}")
+
+exit()
 
 start = time.time()
 

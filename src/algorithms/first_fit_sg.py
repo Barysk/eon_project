@@ -15,7 +15,7 @@ class FirstFitSG(Algorithm):
     def __init__(self, graph: DiGraph, connections: list[Connection], routes: list[Route], modulations: list[Modulation]):
         super().__init__(graph, connections, routes, modulations)
 
-    def _solve_rsa(self, super_channel : SuperChannel, time : int):
+    def _solve_rsa(self, super_channel : SuperChannel, time : int) -> float:
         for route in filter(lambda r: r.source == super_channel.source and r.destination == super_channel.destination,
                             self.routes):  # for every potential route (filter is stable, so the shortest first)
 
@@ -37,8 +37,8 @@ class FirstFitSG(Algorithm):
                             break
                     if found_allocation:
                         super_channel.assign_solution(route, modulation, spectrum_start, channel_number)
-                        return
-        raise ValueError("Could not solve RSA for current state!")
+                        return 0.0  # successfully assigned
+        return super_channel.get_desired_rate(time) # how much bitrate did we drop
 
     def _init_superchannels(self):
         if not len(self.super_channels) == 0:

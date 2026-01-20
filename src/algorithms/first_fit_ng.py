@@ -35,8 +35,8 @@ class FirstFitNG(Algorithm):
                             break
                     if found_allocation:
                         super_channel.assign_solution(route, modulation, spectrum_start, channel_number)
-                        return
-        raise ValueError("Could not solve RSA for current state!")
+                        return 0.0  # successfully assigned
+        return super_channel.get_desired_rate(time)  # how much bitrate did we drop
 
     def _init_superchannels(self):
         if not len(self.super_channels) == 0:
