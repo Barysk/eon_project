@@ -96,9 +96,10 @@ class Algorithm:
         failed = False
         # for each superchanel...
         for sup_chan in self.super_channels:
-            # ... check if we can still serve it with the current assignment...
-            if (sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate * sup_chan.channel_number
-                    or sup_chan.get_desired_rate(time) < 0.9 * sup_chan.modulation.bitrate * sup_chan.channel_number):
+            # ... check if:
+            if (sup_chan.get_desired_rate(time) > sup_chan.modulation.bitrate * sup_chan.channel_number # the demand is too large OR
+                    or sup_chan.get_desired_rate(time) < 0.9 * sup_chan.modulation.bitrate * sup_chan.channel_number # the demand is too small OR
+                    or sup_chan.route is None): # the channel is unassigned
                 # ... and if not, try to reassign it
                 if self._solve_rsa(sup_chan, time) > 0:
                     failed = True
