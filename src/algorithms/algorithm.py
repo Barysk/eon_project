@@ -47,6 +47,10 @@ class Algorithm:
             cumulative_perf += perf
             print(f"Iteration {iteration}: {perf}")
         print(f"Overall: {cumulative_perf}")
+        self._overall_performance = cumulative_perf
+
+    def get_overall_performance(self):
+        return getattr(self, "_overall_performance", 0)
 
     def _rebuild_assignments(self, time: int) -> None:
         """Cleans the resource allocation and regenerates the solutions.
