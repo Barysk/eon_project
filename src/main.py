@@ -1,5 +1,6 @@
 import time
 import csv
+import copy
 
 from src.algorithms.first_fit_ng import FirstFitNG
 from src.algorithms.first_fit_sg import FirstFitSG
@@ -78,40 +79,40 @@ def run_tests(test_case: TestInfo, MOD, output_file="results.csv"):
                 match i:
                     case 0:
                         ffng = FirstFitNG(
-                            graph       = net_obj,
-                            connections = dem_obj,
-                            routes      = pat_obj,
-                            modulations = MOD)
+                            graph       = copy.deepcopy(net_obj), # For some reason, deepcopy prevents crash
+                            connections = copy.deepcopy(dem_obj), # it seems data mutates somewhere
+                            routes      = copy.deepcopy(pat_obj),
+                            modulations = copy.deepcopy(MOD))
 
                         ffng.run()
 
                         result = ffng.get_overall_performance()
                     case 1:
                         ffsg = FirstFitSG(
-                            graph       = net_obj,
-                            connections = dem_obj,
-                            routes      = pat_obj,
-                            modulations = MOD)
+                            graph       = copy.deepcopy(net_obj),
+                            connections = copy.deepcopy(dem_obj),
+                            routes      = copy.deepcopy(pat_obj),
+                            modulations = copy.deepcopy(MOD))
 
                         ffsg.run()
 
                         result = ffsg.get_overall_performance()
                     case 2:
                         efng = ExactFitNG(
-                            graph       = net_obj,
-                            connections = dem_obj,
-                            routes      = pat_obj,
-                            modulations = MOD)
+                            graph       = copy.deepcopy(net_obj),
+                            connections = copy.deepcopy(dem_obj),
+                            routes      = copy.deepcopy(pat_obj),
+                            modulations = copy.deepcopy(MOD))
 
                         efng.run()
 
                         result = efng.get_overall_performance()
                     case 3:
                         efsg = ExactFitSG(
-                            graph       = net_obj,
-                            connections = dem_obj,
-                            routes      = pat_obj,
-                            modulations = MOD)
+                            graph       = copy.deepcopy(net_obj),
+                            connections = copy.deepcopy(dem_obj),
+                            routes      = copy.deepcopy(pat_obj),
+                            modulations = copy.deepcopy(MOD))
 
                         efsg.run()
 
