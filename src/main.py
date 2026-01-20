@@ -18,6 +18,12 @@ class TestInfo:
 
 RESULTS_FILENAME = "results.csv"
 
+PL_NET = "./assets/POL12/pol12.net"
+US_NET = "./assets/US26/us26.net"
+
+PL_PAT = "./assets/POL12/pol12.pat"
+US_PAT = "./assets/US26/us26.pat"
+
 MOD = [
     Modulation(name="QPSK",   max_distance=999999, bit_rate=200, width=6),
     Modulation(name="8-QAM",  max_distance=999999, bit_rate=400, width=9),
@@ -27,31 +33,38 @@ MOD = [
 ]
 
 TESTS = [
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_0"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_1"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_2"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_3"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_4"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_5"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_6"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_7"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_8"),
-    TestInfo(net="./assets/POL12/pol12.net", pat="./assets/POL12/pol12.pat", dem="./assets/POL12/demands_9"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_0"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_1"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_2"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_3"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_4"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_5"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_6"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_7"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_8"),
+    TestInfo(net=PL_NET, pat=PL_PAT, dem="./assets/POL12/demands_9"),
 
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_0"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_1"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_2"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_3"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_4"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_5"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_6"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_7"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_8"),
-    TestInfo(net="./assets/US26/us26.net",   pat="./assets/US26/us26.pat",   dem="./assets/US26/demands_9"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_0"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_1"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_2"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_3"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_4"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_5"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_6"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_7"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_8"),
+    TestInfo(net=US_NET, pat=US_PAT, dem="./assets/US26/demands_9"),
 ]
 
 def run_tests(test_case: TestInfo, MOD, output_file="results.csv"):
-    req_sets = [100, 200, 300, 400, 500]
+    req_sets = []
+
+    if test_case.net == PL_NET:
+        req_sets = [100, 200, 300, 400, 500]
+    elif test_case.net == US_NET:
+        req_sets = [200, 400, 600, 800, 1000]
+    else:
+        raise RuntimeError("What?\nnet data wrong")
 
     algorythms = [
         "First Fit No Grooming",
